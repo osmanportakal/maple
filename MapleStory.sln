@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapleStory", "MapleStory\MapleStory\MapleStory.csproj", "{2F1375FB-7CCC-4351-B384-05451B2E5714}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "MapleStoryContent", "MapleStory\MapleStoryContent\MapleStoryContent.contentproj", "{64E7D3A9-9302-4131-B1D0-6728F7CB1768}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F1375FB-7CCC-4351-B384-05451B2E5714}.Debug|x86.ActiveCfg = Debug|x86
+		{2F1375FB-7CCC-4351-B384-05451B2E5714}.Debug|x86.Build.0 = Debug|x86
+		{2F1375FB-7CCC-4351-B384-05451B2E5714}.Release|x86.ActiveCfg = Release|x86
+		{2F1375FB-7CCC-4351-B384-05451B2E5714}.Release|x86.Build.0 = Release|x86
+		{64E7D3A9-9302-4131-B1D0-6728F7CB1768}.Debug|x86.ActiveCfg = Debug|x86
+		{64E7D3A9-9302-4131-B1D0-6728F7CB1768}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
