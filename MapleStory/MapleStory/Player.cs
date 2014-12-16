@@ -9,16 +9,15 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using MapleStory.Levels.Level1;
 
 namespace MapleStory
 {
-    class Player
+    public class Player
     {
 
         KeyboardState currentKBState;
         KeyboardState previousKBState;
-
-
         public Texture2D spriteTexture;
         float timer = 0f;
         float interval = 200f;
@@ -26,11 +25,16 @@ namespace MapleStory
         int frameHeight = 0;
         int spriteWidth = 140;
         int spriteHeight = 100;
-        public int spriteSpeed = 2;
+        public int spriteSpeed = 4;
         Rectangle sourceRect;
         public Vector2 position;
         Vector2 origin;
-        Level1 level1;
+        public Rectangle playerBounds;
+
+        public Boolean onGround = false;
+
+ 
+        public int levelWidth;
 
         public Vector2 Position
         {
@@ -56,37 +60,40 @@ namespace MapleStory
             set { sourceRect = value; }
         }
 
-        public Player(Texture2D texture, int currentFrame, int frameHeight, int spriteWidth, int spriteHeight)
+        public Player(Texture2D texture, int currentFrame, int frameHeight, int spriteWidth, int spriteHeight, int level)
         {
             this.spriteTexture = texture;
             this.currentFrame = currentFrame;
             this.spriteWidth = spriteWidth;
             this.spriteHeight = spriteHeight;
+            this.levelWidth = level;
         }
  
 
         public void HandleSpriteMovement(GameTime gameTime)
         {
-            level1 = new Level1();
-
 	        previousKBState = currentKBState;
 	        currentKBState = Keyboard.GetState();
 	        sourceRect = new Rectangle(currentFrame * spriteWidth, frameHeight * spriteHeight, spriteWidth, spriteHeight);
 
+            playerBounds = new Rectangle((int)(position.X - spriteWidth / 2), (int) (position.Y - spriteHeight / 2), spriteWidth, spriteHeight);
 
 	        if (currentKBState.GetPressedKeys().Length == 0)
 	        {
                 frameHeight = 0;                
                 AnimateAlert(gameTime);
-                //isFalling(gameTime);
-		    }
 
+                if (onGround == false)
+                {
+                    isFalling(gameTime);
+                }
+		    }
 	      
 	        if (currentKBState.IsKeyDown(Keys.Right) == true)
 	        {
                 frameHeight = 2;
 		        Walk(gameTime);
-		        if (position.X < level1.mapWidth)
+		        if (position.X < levelWidth)
 		        {
 			        position.X += spriteSpeed;
 		        }
@@ -125,13 +132,27 @@ namespace MapleStory
                 }
             }
 
-          
 	        origin = new Vector2(sourceRect.Width / 2, sourceRect.Height / 2);
+
+        }
+
+        public void collide(List<Grass> grassList, List<Dirt> dirtList, List <Corner>cornerList)
+        {
+            for (int i = 0; i < grassList.Count(); i++)
+            {
+                if(this.playerBounds.Intersects(grassList[i].tileBounds))
+                {
+                    onGround = true;
+                }
+                else
+                {
+                    onGround = false;
+                }
+            }
         }
 
         
         //ANIMATE
-
         public void isFalling(GameTime gameTime)
         {
 
@@ -194,5 +215,10 @@ namespace MapleStory
                 timer = 0f;
             }
         }
+
+
+
     }
+
+        
 }

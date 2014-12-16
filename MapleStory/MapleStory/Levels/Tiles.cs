@@ -16,12 +16,22 @@ namespace MapleStory
         public Boolean collision = false;
         public int id;
         public String imgSrc;
+        public Vector2 position;
+        public Rectangle tileBounds;
 
-        public void collide() 
+        public Player playerOne;
+
+        public Vector2 Position
         {
-
+            get { return position; }
+            set { position = value; }
         }
 
+        public Tiles() 
+        {
+            tileBounds = new Rectangle((int)position.X, (int)position.Y, 90, 1000);
+        }
 
+       
     }
 }

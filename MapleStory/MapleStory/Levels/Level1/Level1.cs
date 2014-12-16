@@ -13,10 +13,9 @@ using Microsoft.Xna.Framework.Media;
 
 namespace MapleStory
 {
-    class Level1 : Microsoft.Xna.Framework.Game
+    class Level1 : Level
     {
-        public int[,] array;
-        public int mapWidth = 1440;
+        public int levelWidth = 1440;
 
         public void createTiles()
         {
@@ -33,10 +32,6 @@ namespace MapleStory
                 {1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 
            };
-
-           
         }
-        
-
     }
 }

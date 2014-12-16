@@ -10,8 +10,7 @@ namespace MapleStory.Levels.Level1
 {
     public class Corner : Tiles
     {
-        public String imgURL;
-
+        
         public Corner() 
         {
             imgSrc = "corner";

@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace MapleStory.Levels.Level1
 {
-    class Dirt :Tiles
+    public class Dirt :Tiles
     {
-         public Dirt() 
+        public Dirt() 
         {
             imgSrc = "dirt";
             id = 1;

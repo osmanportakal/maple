@@ -76,6 +76,7 @@
     <Compile Include="Levels\Level1\Corner.cs" />
     <Compile Include="Levels\Level1\Grass.cs" />
     <Compile Include="Levels\Level1\Dirt.cs" />
+    <Compile Include="Levels\Level.cs" />
     <Compile Include="Levels\Level1\Level1.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
