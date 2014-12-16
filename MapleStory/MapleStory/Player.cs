@@ -136,11 +136,12 @@ namespace MapleStory
 
         }
 
-        public void collide(List<Grass> grassList, List<Dirt> dirtList, List <Corner>cornerList)
+        public void collide(Level level1)
         {
-            for (int i = 0; i < grassList.Count(); i++)
+
+            for (int i = 0; i < level1.grassList.Count(); i++)
             {
-                if(this.playerBounds.Intersects(grassList[i].tileBounds))
+                if(this.playerBounds.Intersects(level1.grassList[i].tileBounds))
                 {
                     onGround = true;
                 }
