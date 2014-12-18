@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace MapleStory
 {
-    class Level : Microsoft.Xna.Framework.Game
+    public class Level : Microsoft.Xna.Framework.Game
     {
         public int[,] array;
       

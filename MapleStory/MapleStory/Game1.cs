@@ -18,10 +18,11 @@ namespace MapleStory
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player playerOne;
-        Vector2 playerPos = new Vector2(200, 400);
+        Vector2 playerPos = new Vector2(200, 300);
         Texture2D spriteImage;
         public Level1 level1;
         Camera camera;
+        SpriteFont font;
 
         public Game1()
         {
@@ -59,11 +60,13 @@ namespace MapleStory
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.AliceBlue);
-
+           
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                         null, null, null, null,
                         camera.transform);
             createWorld(spriteBatch);
+            font = Content.Load<SpriteFont>("Courier New");
+            spriteBatch.DrawString(font, playerOne.intersection.ToString(), new Vector2(600, 100), Color.Black);
             spriteBatch.Draw(playerOne.Texture, playerOne.Position, playerOne.SourceRect, Color.White, 0f, playerOne.Origin, 1.0f, SpriteEffects.None, 0);
             spriteBatch.End();
 
@@ -72,12 +75,12 @@ namespace MapleStory
         
         protected override void Update(GameTime gameTime)
         {
-            playerOne.collide(level1);
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
+            playerOne.collide(gameTime, level1);
             playerOne.HandleSpriteMovement(gameTime);
-
+            
             if (Keyboard.GetState().IsKeyDown(Keys.Left) == true)
             {
                 playerOne.spriteTexture = Content.Load<Texture2D>("spriteLeft");
@@ -88,6 +91,7 @@ namespace MapleStory
             }
 
             camera.Update(gameTime, playerOne);
+           
             base.Update(gameTime);
         }
 

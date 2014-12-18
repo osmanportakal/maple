@@ -10,12 +10,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MapleStory.Levels.Level1;
+using System.Diagnostics;
 
 namespace MapleStory
 {
     public class Player
     {
-
         KeyboardState currentKBState;
         KeyboardState previousKBState;
         public Texture2D spriteTexture;
@@ -25,13 +25,17 @@ namespace MapleStory
         int frameHeight = 0;
         int spriteWidth = 140;
         int spriteHeight = 100;
-        public int spriteSpeed = 4;
+
         Rectangle sourceRect;
         public Vector2 position;
         Vector2 origin;
         public Rectangle playerBounds;
 
         public Boolean onGround = false;
+        Boolean hasJumped;
+        Vector2 velocity;
+
+        public int intersection;
 
  
         public int levelWidth;
@@ -72,13 +76,17 @@ namespace MapleStory
 
         public void HandleSpriteMovement(GameTime gameTime)
         {
+            
+            position += velocity;
+            
+           
 	        previousKBState = currentKBState;
 	        currentKBState = Keyboard.GetState();
 	        sourceRect = new Rectangle(currentFrame * spriteWidth, frameHeight * spriteHeight, spriteWidth, spriteHeight);
 
-            playerBounds = new Rectangle((int)(position.X - spriteWidth / 2), (int) (position.Y - spriteHeight / 2), spriteWidth, spriteHeight);
+            playerBounds = new Rectangle((int)(position.X - spriteWidth / 2), (int) (position.Y - spriteHeight / 2), 80, spriteHeight-10);
 
-	        if (currentKBState.GetPressedKeys().Length == 0)
+	        if (currentKBState.GetPressedKeys().Length == 0 || (onGround ==false && hasJumped ==false) )
 	        {
                 frameHeight = 0;                
                 AnimateAlert(gameTime);
@@ -89,25 +97,57 @@ namespace MapleStory
                 }
 		    }
 	      
-	        if (currentKBState.IsKeyDown(Keys.Right) == true)
+	        if (currentKBState.IsKeyDown(Keys.Right) == true && (onGround == true || hasJumped == true))
 	        {
                 frameHeight = 2;
 		        Walk(gameTime);
 		        if (position.X < levelWidth)
 		        {
-			        position.X += spriteSpeed;
-		        }
+                    velocity.X = 5f;
+                } else { velocity.X = 0; }
+                
 	        }
-
-	        if (currentKBState.IsKeyDown(Keys.Left) == true && currentKBState.IsKeyDown(Keys.Up) == false)
+            else if (currentKBState.IsKeyDown(Keys.Left) == true && (onGround == true || hasJumped == true))
 	        {
                 frameHeight = 2;
 		        Walk(gameTime);
 		        if (position.X > 20)
 		        {
-			        position.X -= spriteSpeed;
-		        }
+                    velocity.X = -5f;
+		        } else {velocity.X = 0;}
 	        }
+
+            else { velocity.X = 0f; }
+           
+            if ((currentKBState.IsKeyDown(Keys.Up) == true) && hasJumped ==false)
+            {
+                position.Y -= 10f;
+                velocity.Y = -5f;
+                currentFrame = 0;
+                frameHeight = 4;
+                hasJumped = true;
+            }
+
+            if(hasJumped==true)
+            {
+                currentFrame = 0;
+                frameHeight = 4;
+               velocity.Y += 0.15f;
+               position.Y -= 2f;
+               
+            }
+
+            if (this.position.Y+30 >= intersection && onGround == true)
+            {
+                
+                hasJumped = false;
+                velocity.Y += 2f;
+            }
+
+            if(hasJumped == false)
+            {
+                velocity.Y = 0f;
+            }
 
             if (currentKBState.IsKeyDown(Keys.LeftShift) == true)
             {
@@ -118,36 +158,41 @@ namespace MapleStory
             if (currentKBState.IsKeyDown(Keys.Down) == true)
             {
                 frameHeight = 5;
+                velocity.X = 0;
+                
                 currentFrame = 0;
             }
-
-            if (currentKBState.IsKeyDown(Keys.Up) == true && currentKBState.IsKeyDown(Keys.Left) == true)
-            {
-                frameHeight = 4;
-                currentFrame = 0;
-                if (position.X > 10)
-                {
-                    position.X -= spriteSpeed;
-                    jump(gameTime);
-                }
-            }
-
 	        origin = new Vector2(sourceRect.Width / 2, sourceRect.Height / 2);
-
         }
-
-        public void collide(Level level1)
+       
+        public void collide(GameTime gametime, Level1 level1)
         {
-
-            for (int i = 0; i < level1.grassList.Count(); i++)
+            foreach (Grass grass in level1.grassList)
             {
-                if(this.playerBounds.Intersects(level1.grassList[i].tileBounds))
+                Rectangle tileBound = new Rectangle((int)grass.position.X, (int)grass.position.Y, 90, 90);
+                if (this.playerBounds.Intersects(tileBound))
                 {
+                    intersection = (int)grass.Position.Y;
                     onGround = true;
+                    break;
                 }
-                else
+                onGround = false;
+            }
+
+            foreach (Corner corner in level1.cornerList)
+            {
+                Rectangle tileBound = new Rectangle((int)corner.position.X-45, (int)corner.position.Y, 90, 90);
+                if (this.playerBounds.Intersects(tileBound))
                 {
-                    onGround = false;
+                    intersection = (int)corner.Position.Y;
+                    onGround = true;
+                    break;
+                }
+
+                Rectangle cornerSide = new Rectangle((int)corner.position.X + 45, (int)corner.position.Y, 1, 90);
+                if (this.playerBounds.Intersects(cornerSide) && velocity.X <= 0)
+                {
+                    velocity.X = 0;
                 }
             }
         }
@@ -156,14 +201,13 @@ namespace MapleStory
         //ANIMATE
         public void isFalling(GameTime gameTime)
         {
-
+            frameHeight = 4;
+            currentFrame = 0;
             timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (timer > 50f)
+            if (timer > 2f)
             {
-                position.Y += 3;
-                position.X += 1;
-
-            
+                position.Y += 5;
+                position.X += 0;
                 timer = 0f;
             }
         }
@@ -192,19 +236,7 @@ namespace MapleStory
             }
         }
 
-        public void jump(GameTime gameTime)
-        {
-            timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (timer > interval)
-            {
-                    position.Y -= 80; 
-                    position.X -=20;
-                    position.Y += 80;
-                    
-                   
-                    timer = 0f;
-                }
-        }
+        
 
         public void Attack(GameTime gameTime)
         {

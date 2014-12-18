@@ -29,7 +29,7 @@ namespace MapleStory
 
         public Tiles() 
         {
-            tileBounds = new Rectangle((int)position.X, (int)position.Y, 90, 1000);
+            this.tileBounds = new Rectangle((int)this.position.X, (int)this.position.Y, 90, 90);
         }
 
        
